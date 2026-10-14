@@ -1,0 +1,83 @@
+@startuml erd
+title ERD - Database db_kuliner
+hide circle
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor #FFF4EC
+  BorderColor #F4845F
+  ArrowColor #1F5F66
+  HeaderBackgroundColor #F4845F
+}
+
+entity "kategori" as kategori {
+  * id : INT <<PK>>
+  --
+  * nama : VARCHAR(50) <<UNIQUE>>
+  deskripsi : VARCHAR(255)
+  ikon : VARCHAR(50)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "menu" as menu {
+  * id : INT <<PK>>
+  --
+  * kategori_id : INT <<FK>>
+  * nama : VARCHAR(100)
+  * harga : DECIMAL(12,2)
+  * stok : INT (>= 0)
+  * deskripsi : TEXT
+  gambar : VARCHAR(255)
+  * level_pedas : ENUM
+  * suhu_sajian : ENUM
+  * estimasi_saji : INT (menit)
+  * is_best_seller : TINYINT(1)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity "keranjang" as keranjang {
+  * id : INT <<PK>>
+  --
+  * menu_id : INT <<FK, UNIQUE>>
+  * jumlah : INT
+  catatan_item : VARCHAR(150)
+  created_at : TIMESTAMP
+}
+
+entity "pesanan" as pesanan {
+  * id : INT <<PK>>
+  --
+  * nomor_pesanan : VARCHAR(20) <<UNIQUE>>
+  * nama_pemesan : VARCHAR(100)
+  * no_hp : VARCHAR(15)
+  * tipe_pesanan : ENUM
+  nomor_meja : VARCHAR(10)
+  alamat : VARCHAR(255)
+  catatan : VARCHAR(255)
+  * subtotal : DECIMAL(12,2)
+  * biaya_layanan : DECIMAL(12,2)
+  * ongkir : DECIMAL(12,2)
+  * diskon : DECIMAL(12,2)
+  * total : DECIMAL(12,2)
+  * status : ENUM
+  * tanggal : DATETIME
+}
+
+entity "detail_pesanan" as detail {
+  * id : INT <<PK>>
+  --
+  * pesanan_id : INT <<FK>>
+  menu_id : INT <<FK, NULL>>
+  * nama_menu : VARCHAR(100) (snapshot)
+  * harga_satuan : DECIMAL(12,2) (snapshot)
+  * jumlah : INT
+  catatan_item : VARCHAR(150)
+  * subtotal : DECIMAL(12,2)
+}
+
+kategori ||--o{ menu : "memiliki\n(ON DELETE RESTRICT)"
+menu ||--o| keranjang : "dimasukkan ke\n(ON DELETE CASCADE)"
+pesanan ||--|{ detail : "berisi\n(ON DELETE CASCADE)"
+menu |o--o{ detail : "dipesan dalam\n(ON DELETE SET NULL)"
+@enduml

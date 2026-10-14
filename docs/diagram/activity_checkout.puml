@@ -1,0 +1,66 @@
+@startuml activity_checkout
+title Activity Diagram - Proses Pemesanan / Checkout
+skinparam activity {
+  BackgroundColor #FFF4EC
+  BorderColor #F4845F
+  DiamondBackgroundColor #E6F4F2
+  DiamondBorderColor #2F9C95
+}
+skinparam swimlane {
+  BorderColor #1F5F66
+  TitleFontColor #1F5F66
+}
+
+|Pelanggan (Aplikasi Flutter)|
+start
+:Membuka Katalog / Beranda;
+:Memilih menu & membuka Detail Menu;
+if (Stok menu = 0?) then (ya)
+  :Tombol "Habis" nonaktif;
+  stop
+else (tidak)
+endif
+:Mengatur jumlah (<= stok)\n& menulis catatan item (opsional);
+:Tekan "Tambah ke Keranjang";
+|Server (REST API PHP)|
+:keranjang/add.php\nvalidasi stok & simpan ke tabel keranjang;
+|Pelanggan (Aplikasi Flutter)|
+:Badge keranjang bertambah (Obx);
+repeat
+  :Membuka Keranjang;
+  :Ubah jumlah (+/-) / edit catatan / hapus item;
+  note right: jumlah dibatasi 1..stok,\nsubtotal & total reaktif
+repeat while (Tambah menu lain?) is (ya)
+->tidak;
+:Tekan "Checkout";
+:Isi form: nama, no HP, tipe pesanan,\nnomor meja / alamat, catatan;
+if (Form valid?\n(nama wajib, HP 08 + 10-13 digit,\nmeja wajib jika Makan di Tempat,\nalamat wajib jika Diantar)) then (tidak)
+  :Tampilkan pesan error validasi;
+  stop
+else (ya)
+endif
+:Kirim pesanan/checkout.php;
+|Server (REST API PHP)|
+:BEGIN TRANSACTION;
+:SELECT keranjang JOIN menu ... FOR UPDATE;
+if (Stok semua item cukup?) then (tidak)
+  :ROLLBACK;
+  :Respons 409 "Stok tidak cukup";
+  |Pelanggan (Aplikasi Flutter)|
+  :Snackbar error & muat ulang keranjang;
+  stop
+else (ya)
+endif
+|Server (REST API PHP)|
+:Hitung subtotal, biaya layanan Rp2.000,\nongkir Rp8.000 (Diantar), diskon 10% (>= Rp100.000);
+:Buat nomor INV-YYYYMMDD-NNN;
+:INSERT pesanan & detail_pesanan\n(snapshot nama & harga);
+:UPDATE menu SET stok = stok - jumlah;
+:DELETE FROM keranjang;
+:COMMIT;
+:Respons 201 + data pesanan;
+|Pelanggan (Aplikasi Flutter)|
+:Get.offNamed -> Halaman Sukses (arguments);
+:Lihat & cetak Struk PDF\n(preview, simpan, bagikan);
+stop
+@enduml

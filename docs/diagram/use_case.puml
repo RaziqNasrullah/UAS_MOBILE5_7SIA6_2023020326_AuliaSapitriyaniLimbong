@@ -1,0 +1,63 @@
+@startuml use_case
+title Use Case Diagram - Aplikasi Delights (Kedai SweetnFresh)
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #FFF4EC
+  BorderColor #F4845F
+  ArrowColor #1F5F66
+}
+skinparam rectangle {
+  BorderColor #2F9C95
+}
+
+actor "Pelanggan" as P
+actor "Admin / Kasir\nKedai" as A
+
+rectangle "Aplikasi Delights" {
+  usecase "Melihat Beranda\n(sapaan, kategori,\nbest seller)" as UC1
+  usecase "Melihat Katalog Menu" as UC2
+  usecase "Mencari Menu\n(realtime)" as UC3
+  usecase "Memfilter Menu\nper Kategori" as UC4
+  usecase "Melihat Detail Menu" as UC5
+  usecase "Menambah ke Keranjang\n(+ catatan item)" as UC6
+  usecase "Mengelola Keranjang\n(ubah jumlah, catatan, hapus)" as UC7
+  usecase "Checkout Pesanan" as UC8
+  usecase "Validasi Stok" as UC8a
+  usecase "Hitung Biaya\n(layanan, ongkir, diskon)" as UC8b
+  usecase "Melihat Riwayat Pesanan" as UC9
+  usecase "Melihat Detail Pesanan" as UC10
+  usecase "Mencetak / Menyimpan /\nMembagikan Struk PDF" as UC11
+
+  usecase "Mengelola Kategori\n(CRUD)" as UC12
+  usecase "Mengelola Menu (CRUD\n+ upload gambar)" as UC13
+  usecase "Mengubah Status Pesanan\n(Selesai / Dibatalkan)" as UC14
+  usecase "Mengembalikan Stok" as UC14a
+  usecase "Melihat Dashboard\nPenjualan" as UC15
+}
+
+P --> UC1
+P --> UC2
+P --> UC5
+P --> UC6
+P --> UC7
+P --> UC8
+P --> UC9
+P --> UC10
+P --> UC11
+
+UC2 <.. UC3 : <<extend>>
+UC2 <.. UC4 : <<extend>>
+UC8 ..> UC8a : <<include>>
+UC8 ..> UC8b : <<include>>
+UC9 <.. UC10 : <<extend>>
+
+A --> UC12
+A --> UC13
+A --> UC14
+A --> UC15
+A --> UC9
+A --> UC11
+UC14 <.. UC14a : <<extend>>\n(jika Dibatalkan)
+@enduml

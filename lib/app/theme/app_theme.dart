@@ -129,6 +129,7 @@ class AppTheme {
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        hintStyle: TextStyle(color: AppColors.textMuted.withValues(alpha: 0.65), fontWeight: FontWeight.w400),
         border: inputBorder,
         enabledBorder: inputBorder,
         focusedBorder: inputBorder.copyWith(

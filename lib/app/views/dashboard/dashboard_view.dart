@@ -262,7 +262,9 @@ class _LinePendapatan extends StatelessWidget {
   Widget build(BuildContext context) {
     if (data.isEmpty) return const _Kosong();
     final maxVal = data.map((e) => e.pendapatan).reduce((a, b) => a > b ? a : b);
-    final maxY = maxVal <= 0 ? 100000.0 : maxVal * 1.25;
+    // Skala sumbu Y dibulatkan ke kelipatan Rp10.000 agar label rapi (4 garis bantu).
+    final interval = maxVal <= 0 ? 25000.0 : ((maxVal * 1.15 / 4) / 10000).ceil() * 10000.0;
+    final maxY = interval * 4;
     final total = data.fold<double>(0, (s, e) => s + e.pendapatan);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,7 +279,7 @@ class _LinePendapatan extends StatelessWidget {
               maxX: (data.length - 1).toDouble(),
               gridData: FlGridData(
                 drawVerticalLine: false,
-                horizontalInterval: maxY / 4,
+                horizontalInterval: interval,
                 getDrawingHorizontalLine: (_) => const FlLine(color: AppColors.border, strokeWidth: 1),
               ),
               borderData: FlBorderData(show: false),
@@ -298,7 +300,7 @@ class _LinePendapatan extends StatelessWidget {
                   sideTitles: SideTitles(
                     showTitles: true,
                     reservedSize: 40,
-                    interval: maxY / 4,
+                    interval: interval,
                     getTitlesWidget: (value, meta) => Text(
                       Formatter.ringkas(value),
                       style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
@@ -327,6 +329,7 @@ class _LinePendapatan extends StatelessWidget {
                 LineChartBarData(
                   spots: [for (var i = 0; i < data.length; i++) FlSpot(i.toDouble(), data[i].pendapatan)],
                   isCurved: true,
+                  curveSmoothness: 0.2,
                   preventCurveOverShooting: true,
                   color: AppColors.coral,
                   barWidth: 3,

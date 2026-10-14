@@ -35,7 +35,7 @@ class HomeView extends GetView<HomeController> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset('assets/images/logo.png', width: 38, height: 38, fit: BoxFit.cover),
+              child: Image.asset('assets/images/logo_icon.png', width: 40, height: 40),
             ),
             const SizedBox(width: 10),
             const Column(
@@ -175,7 +175,7 @@ class _Banner extends StatelessWidget {
               height: 86,
               decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
               padding: const EdgeInsets.all(6),
-              child: ClipOval(child: Image.asset('assets/images/logo.png', fit: BoxFit.cover)),
+              child: Image.asset('assets/images/logo_icon.png'),
             ),
           ],
         ),

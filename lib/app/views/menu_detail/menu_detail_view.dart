@@ -31,7 +31,21 @@ class MenuDetailView extends GetView<MenuDetailController> {
               expandedHeight: 280,
               pinned: true,
               backgroundColor: AppColors.cream,
-              actions: const [CartBadgeIcon(color: AppColors.tealDark), SizedBox(width: 8)],
+              leading: const Padding(
+                padding: EdgeInsets.all(6),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: BackButton(color: AppColors.tealDark),
+                ),
+              ),
+              actions: const [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor: Colors.white,
+                  child: CartBadgeIcon(color: AppColors.tealDark),
+                ),
+                SizedBox(width: 10),
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   fit: StackFit.expand,

@@ -26,6 +26,10 @@ set_exception_handler(function (Throwable $e): void {
     jsonResponse(false, $pesan, null, 500);
 });
 set_error_handler(function (int $no, string $str, string $file, int $line): bool {
+    // Hormati operator @ (error yang sengaja disenyapkan, mis. @getimagesize).
+    if (!(error_reporting() & $no)) {
+        return false;
+    }
     throw new ErrorException($str, 0, $no, $file, $line);
 });
 

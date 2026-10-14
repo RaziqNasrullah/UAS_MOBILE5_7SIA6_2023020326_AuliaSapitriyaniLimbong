@@ -30,7 +30,7 @@ class StrukController extends GetxController {
     if (_cache != null) return _cache!;
     Uint8List? logo;
     try {
-      logo = (await rootBundle.load('assets/images/logo.png')).buffer.asUint8List();
+      logo = (await rootBundle.load('assets/images/logo_icon.png')).buffer.asUint8List();
     } catch (_) {
       logo = null;
     }
